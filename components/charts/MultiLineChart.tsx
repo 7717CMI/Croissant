@@ -47,19 +47,34 @@ export function MultiLineChart({ title, height = 400 }: MultiLineChartProps) {
       effectiveAggregationLevel = null
     }
 
+    // GEOGRAPHY MODE SPECIAL HANDLING:
+    // When in Geography Mode, we want to show ALL regions by default
+    // The data structure has:
+    // - Global: has all segment types (By Type, By Product Type, etc.) but NOT "By Region"
+    // - Regions (North America, Europe, etc.): ONLY have "By Region" segment type
+    //
+    // For Geography Mode to show regions, we need to use "By Region" segment type
+    const isGeographyMode = filters.viewMode === 'geography-mode'
+
+    // IMPORTANT: In Geography Mode, we should use "By Region" segment type to show regional data
+    const effectiveSegmentType = isGeographyMode ? 'By Region' : filters.segmentType
+
     // Create modified filters with the effective aggregation level
     const modifiedFilters = {
       ...filters,
-      aggregationLevel: effectiveAggregationLevel
+      aggregationLevel: effectiveAggregationLevel,
+      // For Geography Mode: use "By Region" segment type to get regional data
+      segmentType: effectiveSegmentType,
+      // For Geography Mode: use special flag to indicate we want region-level data
+      _geographyModeRegionView: isGeographyMode && filters.geographies.length === 0
     }
 
     const filtered = filterData(dataset, modifiedFilters)
 
     // Use prepareLineChartData when:
     // 1. We have an effective aggregation level (handles Level 2 aggregation)
-    // 2. Geography mode with segments selected (need to aggregate by geography)
-    const useLineChartData = effectiveAggregationLevel !== null ||
-      (filters.viewMode === 'geography-mode' && hasUserSelectedSegments)
+    // 2. Geography mode (always aggregate by geography to show regions)
+    const useLineChartData = effectiveAggregationLevel !== null || isGeographyMode
 
     const prepared = useLineChartData
       ? prepareLineChartData(filtered, modifiedFilters)
@@ -91,14 +106,10 @@ export function MultiLineChart({ title, height = 400 }: MultiLineChartProps) {
       // This ensures we get "Parenteral" instead of "Intravenous", "Intramuscular", etc.
       series = extractSeriesFromPreparedData()
     } else if (filters.viewMode === 'geography-mode') {
-      if (hasUserSelectedSegments) {
-        // Geography mode with segments selected - extract keys from prepared data
-        // This ensures we get all geographies that have data for the selected segments
-        series = extractSeriesFromPreparedData()
-      } else {
-        // Geography mode without segment selection - use geographies
-        series = getUniqueGeographies(filtered, filters.geographies, filters.segmentType)
-      }
+      // GEOGRAPHY MODE: Always extract series from prepared data
+      // This ensures we get all geographies/regions that have data
+      // Works both with and without segment selections
+      series = extractSeriesFromPreparedData()
     } else if (filters.viewMode === 'matrix') {
       // Matrix view - combine geography and segment
       const uniquePairs = new Set<string>()

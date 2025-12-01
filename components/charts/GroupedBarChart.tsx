@@ -56,6 +56,20 @@ export function GroupedBarChart({ title, height = 400 }: GroupedBarChartProps) {
       effectiveAggregationLevel = 2
     }
 
+    // GEOGRAPHY MODE SPECIAL HANDLING:
+    // When in Geography Mode, we want to show ALL regions by default
+    // The data structure has:
+    // - Global: has all segment types (By Type, By Product Type, etc.) but NOT "By Region"
+    // - Regions (North America, Europe, etc.): ONLY have "By Region" segment type
+    //
+    // For Geography Mode to show regions, we need to use "By Region" segment type
+    // because that's where regional data exists
+    const isGeographyMode = filters.viewMode === 'geography-mode'
+
+    // IMPORTANT: In Geography Mode, we should use "By Region" segment type to show regional data
+    // Other segment types only have Global-level data, which can't be broken down by region
+    const effectiveSegmentType = isGeographyMode ? 'By Region' : filters.segmentType
+
     console.log('📊 Chart Data Debug:', {
       totalDataset: dataset.length,
       hasUserSelectedSegments,
@@ -63,15 +77,23 @@ export function GroupedBarChart({ title, height = 400 }: GroupedBarChartProps) {
       segmentsFromSameType: segmentsFromSameType.map((s: any) => s.segment),
       advancedSegments: advancedSegments.map((s: any) => ({ type: s.type, segment: s.segment })),
       filtersSegmentType: filters.segmentType,
+      effectiveSegmentType,
       filtersAggregationLevel: filters.aggregationLevel,
-      willCallFunction: effectiveAggregationLevel !== null ? 'prepareGroupedBarData' : 'prepareIntelligentMultiLevelData'
+      willCallFunction: effectiveAggregationLevel !== null ? 'prepareGroupedBarData' : 'prepareIntelligentMultiLevelData',
+      isGeographyMode,
+      currentGeographies: filters.geographies
     })
 
     // Create modified filters with the effective aggregation level
     // This ensures filterData uses our computed level, not the raw filter value
+    // GEOGRAPHY MODE: Override segment type to "By Region" to show regional data
     const modifiedFilters = {
       ...filters,
-      aggregationLevel: effectiveAggregationLevel
+      aggregationLevel: effectiveAggregationLevel,
+      // For Geography Mode: use "By Region" segment type to get regional data
+      segmentType: effectiveSegmentType,
+      // For Geography Mode: use special flag to indicate we want region-level data
+      _geographyModeRegionView: isGeographyMode && filters.geographies.length === 0
     }
 
     // Filter data with the correct effective aggregation level
@@ -228,13 +250,14 @@ export function GroupedBarChart({ title, height = 400 }: GroupedBarChartProps) {
         // For segment mode with Level 2 aggregation, extract keys from prepared data
         // This ensures we get "Parenteral" instead of "Intravenous", "Intramuscular", etc.
         series = extractSeriesFromPreparedData()
-      } else if (filters.viewMode === 'geography-mode' && hasUserSelectedSegments) {
-        // Geography mode with segments selected - extract keys from prepared data
-        // This ensures we get all geographies that have data for the selected segments
+      } else if (filters.viewMode === 'geography-mode') {
+        // GEOGRAPHY MODE: Always extract series from prepared data
+        // This ensures we get all geographies/regions that have data
+        // Works both with and without segment selections
         series = extractSeriesFromPreparedData()
       } else {
-        // Geography mode without segment selection - use geographies (with region aggregation support)
-        series = getUniqueGeographies(filtered, filters.geographies, filters.segmentType)
+        // Default fallback - extract from prepared data
+        series = extractSeriesFromPreparedData()
       }
     }
 

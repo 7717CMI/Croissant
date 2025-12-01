@@ -58,7 +58,7 @@ export function determineAggregationLevel(
  */
 export function filterData(
   data: DataRecord[],
-  filters: FilterState & { advancedSegments?: any[] }
+  filters: FilterState & { advancedSegments?: any[], _geographyModeRegionView?: boolean }
 ): DataRecord[] {
   // AUTOMATIC LEVEL DETECTION: Determine level based on selected segments
   // Hide aggregation level complexity from users
@@ -66,6 +66,10 @@ export function filterData(
 
   // Special handling for "By Region" segment type - it has a flat structure (no hierarchy)
   const isByRegionSegmentType = filters.segmentType === 'By Region'
+
+  // GEOGRAPHY MODE REGION VIEW: When in Geography Mode with no geography filter selected,
+  // show ALL regions (North America, Europe, Asia Pacific, etc.) by default
+  const isGeographyModeRegionView = (filters as any)._geographyModeRegionView === true
 
   // If aggregationLevel is explicitly set to null or undefined, use automatic detection
   if (effectiveAggregationLevel === null || effectiveAggregationLevel === undefined) {
@@ -475,13 +479,17 @@ export function filterData(
  */
 export function prepareGroupedBarData(
   records: DataRecord[],
-  filters: FilterState & { advancedSegments?: any[] }
+  filters: FilterState & { advancedSegments?: any[], _geographyModeRegionView?: boolean }
 ): ChartDataPoint[] {
   const { yearRange, viewMode, geographies, segments, aggregationLevel } = filters
   const [startYear, endYear] = yearRange
 
   // Special handling for "By Region" segment type - flat structure
   const isByRegionSegmentType = filters.segmentType === 'By Region'
+
+  // GEOGRAPHY MODE REGION VIEW: When in Geography Mode with no geography filter selected,
+  // show ALL regions (North America, Europe, Asia Pacific, etc.) by default
+  const isGeographyModeRegionView = (filters as any)._geographyModeRegionView === true
 
   // Get selected segments for aggregation
   const advancedSegments = filters.advancedSegments || []
@@ -540,14 +548,16 @@ export function prepareGroupedBarData(
   // Determine if we need stacked bars
   const needsStacking = (viewMode === 'segment-mode' && geographies.length > 1) ||
                         (viewMode === 'geography-mode' && segments.length > 1)
-  
+
   // Transform into Recharts format
   return years.map(year => {
     const dataPoint: ChartDataPoint = { year }
 
-    // Special case: Geography Mode with segments selected - aggregate by geography
-    // This shows all regions (North America, Europe, etc.) with their total values
-    if (viewMode === 'geography-mode' && hasUserSelectedSegments && !isByRegionSegmentType) {
+    // GEOGRAPHY MODE DEFAULT: When in Geography Mode, always aggregate by geography/region
+    // This shows all regions (North America, Europe, Asia Pacific, etc.)
+    // - With no segments selected: aggregate all segments for each region
+    // - With segments selected: aggregate only selected segment values for each region
+    if (viewMode === 'geography-mode' && !isByRegionSegmentType) {
       const aggregatedData: Record<string, number> = {}
 
       records.forEach(record => {
@@ -891,13 +901,17 @@ export function prepareGroupedBarData(
  */
 export function prepareLineChartData(
   records: DataRecord[],
-  filters: FilterState & { advancedSegments?: any[] }
+  filters: FilterState & { advancedSegments?: any[], _geographyModeRegionView?: boolean }
 ): ChartDataPoint[] {
   const { yearRange, viewMode, aggregationLevel } = filters
   const [startYear, endYear] = yearRange
 
   // Special handling for "By Region" segment type - flat structure
   const isByRegionSegmentType = filters.segmentType === 'By Region'
+
+  // GEOGRAPHY MODE REGION VIEW: When in Geography Mode with no geography filter selected,
+  // show ALL regions (North America, Europe, Asia Pacific, etc.) by default
+  const isGeographyModeRegionView = (filters as any)._geographyModeRegionView === true
 
   // Get selected segments for aggregation
   const advancedSegments = filters.advancedSegments || []
@@ -963,9 +977,11 @@ export function prepareLineChartData(
   return years.map(year => {
     const dataPoint: ChartDataPoint = { year }
 
-    // Special case: Geography Mode with segments selected - aggregate by geography
-    // This shows all regions (North America, Europe, etc.) with their total values
-    if (viewMode === 'geography-mode' && hasUserSelectedSegments && !isByRegionSegmentType) {
+    // GEOGRAPHY MODE DEFAULT: When in Geography Mode, always aggregate by geography/region
+    // This shows all regions (North America, Europe, Asia Pacific, etc.)
+    // - With no segments selected: aggregate all segments for each region
+    // - With segments selected: aggregate only selected segment values for each region
+    if (viewMode === 'geography-mode' && !isByRegionSegmentType) {
       const aggregatedData: Record<string, number> = {}
 
       records.forEach(record => {
