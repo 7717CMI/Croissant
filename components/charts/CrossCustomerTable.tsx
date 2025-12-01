@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react'
 import { useDashboardStore } from '@/lib/store'
-import { Search, Filter, Download, ChevronDown, ChevronUp, X } from 'lucide-react'
+import { Search, Download, ChevronDown, ChevronUp, X } from 'lucide-react'
 
 interface CrossCustomerData {
   headers: string[]
@@ -23,7 +23,6 @@ export function CrossCustomerTable({ height = 600 }: CrossCustomerTableProps) {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [selectedRegion, setSelectedRegion] = useState<string>('all')
   const [selectedOpportunityScore, setSelectedOpportunityScore] = useState<string>('all')
-  const [expandedRow, setExpandedRow] = useState<number | null>(null)
 
   const { setCompetitiveIntelligenceData } = useDashboardStore()
 
@@ -149,17 +148,59 @@ export function CrossCustomerTable({ height = 600 }: CrossCustomerTableProps) {
     URL.revokeObjectURL(url)
   }
 
-  // Key columns to show in the main table view
-  const keyColumns = [
-    'S.No.',
-    'Company Name',
-    'Region',
-    'Country',
-    'Type of Producer (Packaged Long-Shelf-Life / Frozen Bakery / Fresh & ISB / Mixed)',
-    'Volume Tier (Small / Medium / Large)',
-    'Trivi Opportunity Score (High / Medium / Emerging)',
-    'Trivi Opportunity Type (New Line / Upgrade / Format Extension / Service)'
-  ]
+  // Get cell background color based on column type
+  const getCellStyle = (header: string, value: any): string => {
+    if (header === 'S.No.') return 'bg-gray-100'
+    if (header === 'Company Name') return 'bg-green-50'
+    if (header === 'Region') return 'bg-blue-50'
+    if (header === 'Country') return 'bg-blue-50'
+    if (header.includes('Parent Group')) return 'bg-gray-50'
+    if (header.includes('Type of Producer')) return 'bg-orange-50'
+    if (header.includes('Croissant Product Focus')) return 'bg-yellow-50'
+    if (header.includes('Primary Sales Channels')) return 'bg-amber-50'
+    if (header.includes('Export Orientation')) return 'bg-lime-50'
+    if (header.includes('Main Production Site')) return 'bg-cyan-50'
+    if (header.includes('Estimated Croissant Volume')) return 'bg-teal-50'
+    if (header.includes('Volume Tier')) return 'bg-emerald-50'
+    if (header.includes('Recent CAPEX')) return 'bg-sky-50'
+    if (header.includes('Existing Line')) return 'bg-indigo-50'
+    if (header.includes('Switching')) return 'bg-violet-50'
+    if (header.includes('Trivi Opportunity Type')) return 'bg-purple-50'
+    if (header.includes('Trivi Opportunity Score')) return 'bg-pink-50'
+    if (header.includes('Primary Contact')) return 'bg-rose-50'
+    if (header.includes('Decision Role')) return 'bg-red-50'
+    if (header.includes('Email')) return 'bg-orange-50'
+    if (header.includes('Website')) return 'bg-amber-50'
+    if (header.includes('Telephone')) return 'bg-yellow-50'
+    return 'bg-white'
+  }
+
+  // Get header background color
+  const getHeaderStyle = (header: string): string => {
+    if (header === 'S.No.') return 'bg-gray-300'
+    if (header === 'Company Name') return 'bg-green-200'
+    if (header === 'Region') return 'bg-blue-200'
+    if (header === 'Country') return 'bg-blue-200'
+    if (header.includes('Parent Group')) return 'bg-gray-200'
+    if (header.includes('Type of Producer')) return 'bg-orange-200'
+    if (header.includes('Croissant Product Focus')) return 'bg-yellow-200'
+    if (header.includes('Primary Sales Channels')) return 'bg-amber-200'
+    if (header.includes('Export Orientation')) return 'bg-lime-200'
+    if (header.includes('Main Production Site')) return 'bg-cyan-200'
+    if (header.includes('Estimated Croissant Volume')) return 'bg-teal-200'
+    if (header.includes('Volume Tier')) return 'bg-emerald-200'
+    if (header.includes('Recent CAPEX')) return 'bg-sky-200'
+    if (header.includes('Existing Line')) return 'bg-indigo-200'
+    if (header.includes('Switching')) return 'bg-violet-200'
+    if (header.includes('Trivi Opportunity Type')) return 'bg-purple-200'
+    if (header.includes('Trivi Opportunity Score')) return 'bg-pink-200'
+    if (header.includes('Primary Contact')) return 'bg-rose-200'
+    if (header.includes('Decision Role')) return 'bg-red-200'
+    if (header.includes('Email')) return 'bg-orange-200'
+    if (header.includes('Website')) return 'bg-amber-200'
+    if (header.includes('Telephone')) return 'bg-yellow-200'
+    return 'bg-gray-200'
+  }
 
   if (loading) {
     return (
@@ -265,76 +306,41 @@ export function CrossCustomerTable({ height = 600 }: CrossCustomerTableProps) {
         </div>
       </div>
 
-      {/* Table */}
+      {/* Table with ALL columns */}
       <div className="overflow-x-auto border border-gray-200 rounded-lg" style={{ maxHeight: height }}>
-        <table className="w-full min-w-[1200px]">
-          <thead className="bg-gradient-to-r from-[#52B69A] to-[#34A0A4] sticky top-0 z-10">
+        <table className="w-full border-collapse">
+          <thead className="sticky top-0 z-10">
             <tr>
-              {keyColumns.map((header) => (
+              {data.headers.map((header) => (
                 <th
                   key={header}
                   onClick={() => handleSort(header)}
-                  className="px-4 py-3 text-left text-xs font-semibold text-white cursor-pointer hover:bg-black/10 transition-colors whitespace-nowrap"
+                  className={`px-3 py-2 text-left text-xs font-semibold text-black cursor-pointer hover:opacity-80 transition-colors border border-gray-300 min-w-[120px] ${getHeaderStyle(header)}`}
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="truncate max-w-[150px]" title={header}>
-                      {header.split('(')[0].trim()}
+                  <div className="flex items-center gap-1">
+                    <span className="whitespace-normal leading-tight" style={{ fontSize: '10px' }}>
+                      {header}
                     </span>
                     {sortColumn === header && (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                      sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 flex-shrink-0" /> : <ChevronDown className="w-3 h-3 flex-shrink-0" />
                     )}
                   </div>
                 </th>
               ))}
-              <th className="px-4 py-3 text-left text-xs font-semibold text-white">Details</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
-            {filteredAndSortedRows.map((row, index) => (
-              <>
-                <tr
-                  key={index}
-                  className={`hover:bg-gray-50 transition-colors ${expandedRow === index ? 'bg-blue-50' : ''}`}
-                >
-                  {keyColumns.map((header) => (
-                    <td key={header} className="px-4 py-3 text-sm text-black">
-                      <span className={`
-                        ${header.includes('Opportunity Score') && row[header] === 'High' ? 'px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium' : ''}
-                        ${header.includes('Opportunity Score') && row[header] === 'Medium' ? 'px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium' : ''}
-                        ${header.includes('Opportunity Score') && row[header] === 'Emerging' ? 'px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium' : ''}
-                      `}>
-                        {row[header] === 'xx' ? '-' : (row[header] ?? '-')}
-                      </span>
-                    </td>
-                  ))}
-                  <td className="px-4 py-3">
-                    <button
-                      onClick={() => setExpandedRow(expandedRow === index ? null : index)}
-                      className="px-3 py-1 text-xs bg-[#52B69A] text-white rounded hover:bg-[#34A0A4] transition-colors"
-                    >
-                      {expandedRow === index ? 'Hide' : 'View'}
-                    </button>
+          <tbody>
+            {filteredAndSortedRows.map((row, rowIndex) => (
+              <tr key={rowIndex} className="hover:opacity-90 transition-colors">
+                {data.headers.map((header) => (
+                  <td
+                    key={header}
+                    className={`px-3 py-2 text-xs text-black border border-gray-300 ${getCellStyle(header, row[header])}`}
+                  >
+                    {row[header] === '' || row[header] === null || row[header] === undefined ? 'xx' : row[header]}
                   </td>
-                </tr>
-                {expandedRow === index && (
-                  <tr className="bg-blue-50">
-                    <td colSpan={keyColumns.length + 1} className="px-4 py-4">
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                        {data.headers.filter(h => !keyColumns.includes(h)).map(header => (
-                          <div key={header} className="bg-white p-3 rounded border border-gray-200">
-                            <div className="text-xs text-gray-500 mb-1 truncate" title={header}>
-                              {header.split('(')[0].trim()}
-                            </div>
-                            <div className="text-black font-medium">
-                              {row[header] === 'xx' ? '-' : (row[header] ?? '-')}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </>
+                ))}
+              </tr>
             ))}
           </tbody>
         </table>

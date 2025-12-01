@@ -1,22 +1,29 @@
 import { NextResponse } from 'next/server'
-import * as XLSX from 'xlsx'
-import * as fs from 'fs'
-import * as path from 'path'
+
+// Force this route to be dynamic (not static)
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
+    // Dynamically import modules that use Node.js APIs
+    const XLSX = await import('xlsx')
+    const fs = await import('fs')
+    const path = await import('path')
+
     // Try to load from the root directory
     const filePath = path.join(process.cwd(), 'Cros-customer.xlsx')
 
     if (!fs.existsSync(filePath)) {
+      console.error('File not found at:', filePath)
       return NextResponse.json(
-        { error: 'Cross-customer data file not found' },
+        { error: 'Cross-customer data file not found', path: filePath },
         { status: 404 }
       )
     }
 
     // Read the Excel file
-    const workbook = XLSX.readFile(filePath)
+    const fileBuffer = fs.readFileSync(filePath)
+    const workbook = XLSX.read(fileBuffer, { type: 'buffer' })
     const sheetName = workbook.SheetNames[0]
     const worksheet = workbook.Sheets[sheetName]
 
@@ -44,6 +51,8 @@ export async function GET() {
       // Filter out empty rows
       return Object.values(row).some(val => val !== '' && val !== null && val !== undefined)
     })
+
+    console.log('Successfully loaded cross-customer data:', rows.length, 'rows')
 
     return NextResponse.json({
       headers,

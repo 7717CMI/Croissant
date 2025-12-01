@@ -12,8 +12,6 @@ import { ComparisonTable } from '@/components/charts/ComparisonTable'
 import { WaterfallChart } from '@/components/charts/WaterfallChart'
 import { D3BubbleChartIndependent } from '@/components/charts/D3BubbleChartIndependent'
 import { CompetitiveIntelligence } from '@/components/charts/CompetitiveIntelligence'
-import CustomerIntelligenceHeatmap from '@/components/charts/CustomerIntelligenceHeatmap'
-import DistributorsIntelligence from '@/components/charts/DistributorsIntelligenceTable'
 import { CrossCustomerTable } from '@/components/charts/CrossCustomerTable'
 import { InsightsPanel } from '@/components/InsightsPanel'
 import { FilterPresets } from '@/components/filters/FilterPresets'
@@ -474,22 +472,8 @@ export default function DashboardPage() {
                     )}
                     
                     {activeTab === 'customer-intelligence' && (
-                      <div id="customer-intelligence-chart" className="space-y-8">
-                        <div>
-                          <CrossCustomerTable height={600} />
-                        </div>
-                        <div className="mt-8 pt-8 border-t border-gray-200">
-                          <CustomerIntelligenceHeatmap
-                            title="Customer Intelligence - Industry Category × Region"
-                            height={500}
-                          />
-                        </div>
-                        <div className="mt-8 pt-8 border-t border-gray-200">
-                          <DistributorsIntelligence
-                            title="Distributors Intelligence Database"
-                            height={500}
-                          />
-                        </div>
+                      <div id="customer-intelligence-chart">
+                        <CrossCustomerTable height={600} />
                       </div>
                     )}
                   </>
@@ -564,24 +548,8 @@ export default function DashboardPage() {
                     )}
                     
                     {isChartVisible('customer-intelligence') && (
-                      <div className="space-y-8">
-                        <div className="border-b pb-8">
-                          <CrossCustomerTable height={600} />
-                        </div>
-                        <div className="border-b pb-8">
-                          <h3 className="text-lg font-semibold text-black mb-4">👥 Customer Intelligence Heatmap</h3>
-                          <CustomerIntelligenceHeatmap
-                            title="Customer Intelligence - Industry Category × Region"
-                            height={450}
-                          />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-black mb-4">📦 Distributors Intelligence Database</h3>
-                          <DistributorsIntelligence
-                            title="Distributors Intelligence Database"
-                            height={500}
-                          />
-                        </div>
+                      <div>
+                        <CrossCustomerTable height={600} />
                       </div>
                     )}
                   </div>
