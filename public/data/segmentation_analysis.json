@@ -1,0 +1,303 @@
+{
+  "Global": {
+    "By Type": {},
+    "By Product Type": {
+      "Filled Croissant": {
+        "Chocolate-filled": {},
+        "Cream-filled": {},
+        "Fruit-filled (strawberry, blueberry, apple)": {},
+        "Nut-filled (hazelnut, almond paste, pistachio)": {},
+        "Savory-filled (cheese, ham, spinach, chicken)": {}
+      },
+      "Unfilled / Plain Croissant": {
+        "Traditional butter croissants": {},
+        "Whole wheat croissants": {},
+        "Vegan croissants": {}
+      }
+    },
+    "By Price Tier": {},
+    "By Packaging Format": {},
+    "By End-User": {
+      "Foodservice": {
+        "Bakeries": {},
+        "HoReCa (Cafés, Restaurants, Hotels)": {}
+      },
+      "Institutional": {
+        "Schools": {},
+        "Airlines": {},
+        "Others (Corporate cafeterias, etc.)": {}
+      }
+    },
+    "By Distribution Channel": {
+      "Offline Channels": {
+        "Supermarkets & Hypermarkets": {},
+        "Convenience Stores": {},
+        "HoReCa (Hotels, Restaurants, Cafés, Bakeries)": {},
+        "Specialty & Gourmet Stores": {}
+      },
+      "Online Channels": {
+        "Third Party / E-commerce Websites": {},
+        "Company / Brand Owned Websites": {}
+      }
+    },
+    "By Region": {}
+  },
+  "North America": {
+    "By Type": {},
+    "By Product Type": {
+      "Filled Croissant": {
+        "Chocolate-filled": {},
+        "Cream-filled": {},
+        "Fruit-filled (strawberry, blueberry, apple)": {},
+        "Nut-filled (hazelnut, almond paste, pistachio)": {},
+        "Savory-filled (cheese, ham, spinach, chicken)": {}
+      },
+      "Unfilled / Plain Croissant": {
+        "Traditional butter croissants": {},
+        "Whole wheat croissants": {},
+        "Vegan croissants": {}
+      }
+    },
+    "By Price Tier": {},
+    "By Packaging Format": {},
+    "By End-User": {
+      "Foodservice": {
+        "Bakeries": {},
+        "HoReCa (Cafés, Restaurants, Hotels)": {}
+      },
+      "Institutional": {
+        "Schools": {},
+        "Airlines": {},
+        "Others (Corporate cafeterias, etc.)": {}
+      }
+    },
+    "By Distribution Channel": {
+      "Offline Channels": {
+        "Supermarkets & Hypermarkets": {},
+        "Convenience Stores": {},
+        "HoReCa (Hotels, Restaurants, Cafés, Bakeries)": {},
+        "Specialty & Gourmet Stores": {}
+      },
+      "Online Channels": {
+        "Third Party / E-commerce Websites": {},
+        "Company / Brand Owned Websites": {}
+      }
+    },
+    "By Region": {}
+  },
+  "Europe": {
+    "By Type": {},
+    "By Product Type": {
+      "Filled Croissant": {
+        "Chocolate-filled": {},
+        "Cream-filled": {},
+        "Fruit-filled (strawberry, blueberry, apple)": {},
+        "Nut-filled (hazelnut, almond paste, pistachio)": {},
+        "Savory-filled (cheese, ham, spinach, chicken)": {}
+      },
+      "Unfilled / Plain Croissant": {
+        "Traditional butter croissants": {},
+        "Whole wheat croissants": {},
+        "Vegan croissants": {}
+      }
+    },
+    "By Price Tier": {},
+    "By Packaging Format": {},
+    "By End-User": {
+      "Foodservice": {
+        "Bakeries": {},
+        "HoReCa (Cafés, Restaurants, Hotels)": {}
+      },
+      "Institutional": {
+        "Schools": {},
+        "Airlines": {},
+        "Others (Corporate cafeterias, etc.)": {}
+      }
+    },
+    "By Distribution Channel": {
+      "Offline Channels": {
+        "Supermarkets & Hypermarkets": {},
+        "Convenience Stores": {},
+        "HoReCa (Hotels, Restaurants, Cafés, Bakeries)": {},
+        "Specialty & Gourmet Stores": {}
+      },
+      "Online Channels": {
+        "Third Party / E-commerce Websites": {},
+        "Company / Brand Owned Websites": {}
+      }
+    },
+    "By Region": {}
+  },
+  "Asia Pacific": {
+    "By Type": {},
+    "By Product Type": {
+      "Filled Croissant": {
+        "Chocolate-filled": {},
+        "Cream-filled": {},
+        "Fruit-filled (strawberry, blueberry, apple)": {},
+        "Nut-filled (hazelnut, almond paste, pistachio)": {},
+        "Savory-filled (cheese, ham, spinach, chicken)": {}
+      },
+      "Unfilled / Plain Croissant": {
+        "Traditional butter croissants": {},
+        "Whole wheat croissants": {},
+        "Vegan croissants": {}
+      }
+    },
+    "By Price Tier": {},
+    "By Packaging Format": {},
+    "By End-User": {
+      "Foodservice": {
+        "Bakeries": {},
+        "HoReCa (Cafés, Restaurants, Hotels)": {}
+      },
+      "Institutional": {
+        "Schools": {},
+        "Airlines": {},
+        "Others (Corporate cafeterias, etc.)": {}
+      }
+    },
+    "By Distribution Channel": {
+      "Offline Channels": {
+        "Supermarkets & Hypermarkets": {},
+        "Convenience Stores": {},
+        "HoReCa (Hotels, Restaurants, Cafés, Bakeries)": {},
+        "Specialty & Gourmet Stores": {}
+      },
+      "Online Channels": {
+        "Third Party / E-commerce Websites": {},
+        "Company / Brand Owned Websites": {}
+      }
+    },
+    "By Region": {}
+  },
+  "Latin America": {
+    "By Type": {},
+    "By Product Type": {
+      "Filled Croissant": {
+        "Chocolate-filled": {},
+        "Cream-filled": {},
+        "Fruit-filled (strawberry, blueberry, apple)": {},
+        "Nut-filled (hazelnut, almond paste, pistachio)": {},
+        "Savory-filled (cheese, ham, spinach, chicken)": {}
+      },
+      "Unfilled / Plain Croissant": {
+        "Traditional butter croissants": {},
+        "Whole wheat croissants": {},
+        "Vegan croissants": {}
+      }
+    },
+    "By Price Tier": {},
+    "By Packaging Format": {},
+    "By End-User": {
+      "Foodservice": {
+        "Bakeries": {},
+        "HoReCa (Cafés, Restaurants, Hotels)": {}
+      },
+      "Institutional": {
+        "Schools": {},
+        "Airlines": {},
+        "Others (Corporate cafeterias, etc.)": {}
+      }
+    },
+    "By Distribution Channel": {
+      "Offline Channels": {
+        "Supermarkets & Hypermarkets": {},
+        "Convenience Stores": {},
+        "HoReCa (Hotels, Restaurants, Cafés, Bakeries)": {},
+        "Specialty & Gourmet Stores": {}
+      },
+      "Online Channels": {
+        "Third Party / E-commerce Websites": {},
+        "Company / Brand Owned Websites": {}
+      }
+    },
+    "By Region": {}
+  },
+  "Middle East": {
+    "By Type": {},
+    "By Product Type": {
+      "Filled Croissant": {
+        "Chocolate-filled": {},
+        "Cream-filled": {},
+        "Fruit-filled (strawberry, blueberry, apple)": {},
+        "Nut-filled (hazelnut, almond paste, pistachio)": {},
+        "Savory-filled (cheese, ham, spinach, chicken)": {}
+      },
+      "Unfilled / Plain Croissant": {
+        "Traditional butter croissants": {},
+        "Whole wheat croissants": {},
+        "Vegan croissants": {}
+      }
+    },
+    "By Price Tier": {},
+    "By Packaging Format": {},
+    "By End-User": {
+      "Foodservice": {
+        "Bakeries": {},
+        "HoReCa (Cafés, Restaurants, Hotels)": {}
+      },
+      "Institutional": {
+        "Schools": {},
+        "Airlines": {},
+        "Others (Corporate cafeterias, etc.)": {}
+      }
+    },
+    "By Distribution Channel": {
+      "Offline Channels": {
+        "Supermarkets & Hypermarkets": {},
+        "Convenience Stores": {},
+        "HoReCa (Hotels, Restaurants, Cafés, Bakeries)": {},
+        "Specialty & Gourmet Stores": {}
+      },
+      "Online Channels": {
+        "Third Party / E-commerce Websites": {},
+        "Company / Brand Owned Websites": {}
+      }
+    },
+    "By Region": {}
+  },
+  "Africa": {
+    "By Type": {},
+    "By Product Type": {
+      "Filled Croissant": {
+        "Chocolate-filled": {},
+        "Cream-filled": {},
+        "Fruit-filled (strawberry, blueberry, apple)": {},
+        "Nut-filled (hazelnut, almond paste, pistachio)": {},
+        "Savory-filled (cheese, ham, spinach, chicken)": {}
+      },
+      "Unfilled / Plain Croissant": {
+        "Traditional butter croissants": {},
+        "Whole wheat croissants": {},
+        "Vegan croissants": {}
+      }
+    },
+    "By Price Tier": {},
+    "By Packaging Format": {},
+    "By End-User": {
+      "Foodservice": {
+        "Bakeries": {},
+        "HoReCa (Cafés, Restaurants, Hotels)": {}
+      },
+      "Institutional": {
+        "Schools": {},
+        "Airlines": {},
+        "Others (Corporate cafeterias, etc.)": {}
+      }
+    },
+    "By Distribution Channel": {
+      "Offline Channels": {
+        "Supermarkets & Hypermarkets": {},
+        "Convenience Stores": {},
+        "HoReCa (Hotels, Restaurants, Cafés, Bakeries)": {},
+        "Specialty & Gourmet Stores": {}
+      },
+      "Online Channels": {
+        "Third Party / E-commerce Websites": {},
+        "Company / Brand Owned Websites": {}
+      }
+    },
+    "By Region": {}
+  }
+}
