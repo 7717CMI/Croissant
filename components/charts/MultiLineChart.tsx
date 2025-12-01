@@ -30,29 +30,40 @@ export function MultiLineChart({ title, height = 400 }: MultiLineChartProps) {
       ? data.data.value.geography_segment_matrix
       : data.data.volume.geography_segment_matrix
 
-    const filtered = filterData(dataset, filters)
-
     // Determine effective aggregation level for chart preparation
     // When no segments are selected for the current segment type, default to Level 2
-    let effectiveAggregationLevel = filters.aggregationLevel
-    if (effectiveAggregationLevel === null || effectiveAggregationLevel === undefined) {
-      const advancedSegments = filters.advancedSegments || []
-      const segmentsFromSameType = advancedSegments.filter(
-        (seg: any) => seg.type === filters.segmentType
-      )
-      const hasSegmentsForCurrentType = segmentsFromSameType.length > 0
+    const advancedSegments = filters.advancedSegments || []
+    const segmentsFromSameType = advancedSegments.filter(
+      (seg: any) => seg.type === filters.segmentType
+    )
+    const hasUserSelectedSegments = segmentsFromSameType.length > 0
 
-      if (!hasSegmentsForCurrentType) {
-        // No segments selected - use Level 2 to show parent segments aggregated
-        effectiveAggregationLevel = 2
-      }
+    let effectiveAggregationLevel: number | null = filters.aggregationLevel ?? null
+    if (!hasUserSelectedSegments && effectiveAggregationLevel === null) {
+      // No segments selected - use Level 2 to show parent segments aggregated
+      effectiveAggregationLevel = 2
+    } else if (hasUserSelectedSegments) {
+      // User selected segments - show individual records
+      effectiveAggregationLevel = null
     }
 
-    // Use prepareLineChartData when we have an effective aggregation level
-    // This ensures parent segments are shown instead of sub-segments when no segment is selected
-    const prepared = effectiveAggregationLevel !== null
-      ? prepareLineChartData(filtered, filters)
-      : prepareIntelligentMultiLevelData(filtered, filters)
+    // Create modified filters with the effective aggregation level
+    const modifiedFilters = {
+      ...filters,
+      aggregationLevel: effectiveAggregationLevel
+    }
+
+    const filtered = filterData(dataset, modifiedFilters)
+
+    // Use prepareLineChartData when:
+    // 1. We have an effective aggregation level (handles Level 2 aggregation)
+    // 2. Geography mode with segments selected (need to aggregate by geography)
+    const useLineChartData = effectiveAggregationLevel !== null ||
+      (filters.viewMode === 'geography-mode' && hasUserSelectedSegments)
+
+    const prepared = useLineChartData
+      ? prepareLineChartData(filtered, modifiedFilters)
+      : prepareIntelligentMultiLevelData(filtered, modifiedFilters)
 
     // Extract series from prepared data keys instead of from filtered records
     // This ensures we use the aggregated keys (e.g., "Parenteral") not the original segment names
@@ -80,10 +91,14 @@ export function MultiLineChart({ title, height = 400 }: MultiLineChartProps) {
       // This ensures we get "Parenteral" instead of "Intravenous", "Intramuscular", etc.
       series = extractSeriesFromPreparedData()
     } else if (filters.viewMode === 'geography-mode') {
-      // When multiple segments are selected, each line represents a geography
-      // aggregating all selected segments
-      // Pass selected geographies and segment type to properly handle "By Region"
-      series = getUniqueGeographies(filtered, filters.geographies, filters.segmentType)
+      if (hasUserSelectedSegments) {
+        // Geography mode with segments selected - extract keys from prepared data
+        // This ensures we get all geographies that have data for the selected segments
+        series = extractSeriesFromPreparedData()
+      } else {
+        // Geography mode without segment selection - use geographies
+        series = getUniqueGeographies(filtered, filters.geographies, filters.segmentType)
+      }
     } else if (filters.viewMode === 'matrix') {
       // Matrix view - combine geography and segment
       const uniquePairs = new Set<string>()

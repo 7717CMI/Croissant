@@ -194,6 +194,7 @@ export function filterData(
       // - If a LEAF segment is selected directly, show that leaf record
       // - If no segments selected: Only show leaf records (to avoid double-counting)
       // - EXCEPTION: For "By Region" segment type, include all matching records (flat structure)
+      // - EXCEPTION: For Geography Mode, allow aggregated records to show region-level data
       const hasSegmentFilter = (filters.advancedSegments && filters.advancedSegments.length > 0) ||
                                (filters.segments && filters.segments.length > 0)
 
@@ -202,8 +203,11 @@ export function filterData(
         // because the structure is flat and we need to show country data
         if (isByRegionSegmentType) {
           // Allow aggregated records for By Region - they represent individual countries
+        } else if (filters.viewMode === 'geography-mode') {
+          // Allow aggregated records in Geography Mode - we need them to show region totals
+          // The segment filter will still apply to ensure only selected segments are included
         } else {
-          // ALWAYS exclude aggregated records when user has selected segments
+          // ALWAYS exclude aggregated records when user has selected segments in segment-mode
           // This ensures we show sub-segments (Intravenous, etc.) NOT the parent (Parenteral)
           // The sub-segments will be shown via the hierarchy matching in the segment filter
           return false
@@ -540,6 +544,28 @@ export function prepareGroupedBarData(
   // Transform into Recharts format
   return years.map(year => {
     const dataPoint: ChartDataPoint = { year }
+
+    // Special case: Geography Mode with segments selected - aggregate by geography
+    // This shows all regions (North America, Europe, etc.) with their total values
+    if (viewMode === 'geography-mode' && hasUserSelectedSegments && !isByRegionSegmentType) {
+      const aggregatedData: Record<string, number> = {}
+
+      records.forEach(record => {
+        // Group by geography - aggregate all segment values for each region
+        const key = record.geography
+
+        if (!aggregatedData[key]) {
+          aggregatedData[key] = 0
+        }
+        aggregatedData[key] += record.time_series[year] || 0
+      })
+
+      Object.entries(aggregatedData).forEach(([key, value]) => {
+        dataPoint[key] = value
+      })
+
+      return dataPoint
+    }
 
     // Special case: "By Region" segment type - show each country as separate series
     if (isByRegionSegmentType && hasUserSelectedSegments) {
@@ -936,6 +962,28 @@ export function prepareLineChartData(
   // Line charts always aggregate data by the primary dimension
   return years.map(year => {
     const dataPoint: ChartDataPoint = { year }
+
+    // Special case: Geography Mode with segments selected - aggregate by geography
+    // This shows all regions (North America, Europe, etc.) with their total values
+    if (viewMode === 'geography-mode' && hasUserSelectedSegments && !isByRegionSegmentType) {
+      const aggregatedData: Record<string, number> = {}
+
+      records.forEach(record => {
+        // Group by geography - aggregate all segment values for each region
+        const key = record.geography
+
+        if (!aggregatedData[key]) {
+          aggregatedData[key] = 0
+        }
+        aggregatedData[key] += record.time_series[year] || 0
+      })
+
+      Object.entries(aggregatedData).forEach(([key, value]) => {
+        dataPoint[key] = value
+      })
+
+      return dataPoint
+    }
 
     // Special case: "By Region" segment type - show each country as separate line
     if (isByRegionSegmentType && hasUserSelectedSegments) {

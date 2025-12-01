@@ -126,9 +126,14 @@ export function GroupedBarChart({ title, height = 400 }: GroupedBarChartProps) {
     }
 
     // Prepare chart data
-    // Use prepareGroupedBarData when we have an effective aggregation level (handles Level 2 aggregation)
+    // Use prepareGroupedBarData when:
+    // 1. We have an effective aggregation level (handles Level 2 aggregation)
+    // 2. Geography mode with segments selected (need to aggregate by geography)
     // This ensures parent segments are shown instead of sub-segments when no segment is selected
-    const prepared = effectiveAggregationLevel !== null
+    const useGroupedBarData = effectiveAggregationLevel !== null ||
+      (filters.viewMode === 'geography-mode' && hasUserSelectedSegments)
+
+    const prepared = useGroupedBarData
       ? prepareGroupedBarData(filtered, modifiedFilters)
       : prepareIntelligentMultiLevelData(filtered, modifiedFilters)
 
@@ -147,7 +152,8 @@ export function GroupedBarChart({ title, height = 400 }: GroupedBarChartProps) {
       effectiveAggregationLevel,
       hasUserSelectedSegments,
       advancedSegments: filters.advancedSegments,
-      usingFunction: effectiveAggregationLevel !== null ? 'prepareGroupedBarData' : 'prepareIntelligentMultiLevelData'
+      usingFunction: useGroupedBarData ? 'prepareGroupedBarData' : 'prepareIntelligentMultiLevelData',
+      viewMode: filters.viewMode
     })
 
     // Determine if we're using stacked bars
@@ -222,8 +228,12 @@ export function GroupedBarChart({ title, height = 400 }: GroupedBarChartProps) {
         // For segment mode with Level 2 aggregation, extract keys from prepared data
         // This ensures we get "Parenteral" instead of "Intravenous", "Intramuscular", etc.
         series = extractSeriesFromPreparedData()
+      } else if (filters.viewMode === 'geography-mode' && hasUserSelectedSegments) {
+        // Geography mode with segments selected - extract keys from prepared data
+        // This ensures we get all geographies that have data for the selected segments
+        series = extractSeriesFromPreparedData()
       } else {
-        // Geography mode - use geographies (with region aggregation support)
+        // Geography mode without segment selection - use geographies (with region aggregation support)
         series = getUniqueGeographies(filtered, filters.geographies, filters.segmentType)
       }
     }
